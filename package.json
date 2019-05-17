@@ -1,0 +1,38 @@
+{
+  "name": "leetcode",
+  "version": "1.0.0",
+  "description": "learning javascript algorithms and data structures from leetcode",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HumorYi/leetcode.git"
+  },
+  "keywords": [
+    "leetcode",
+    "javascript",
+    "algorithms",
+    "and",
+    "data",
+    "structures",
+    "javascript",
+    "算法与数据结构",
+    "js算法与数据结构"
+  ],
+  "author": "HumorYi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HumorYi/leetcode/issues"
+  },
+  "homepage": "https://github.com/HumorYi/leetcode#readme",
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^24.8.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^24.8.0",
+    "regenerator-runtime": "^0.13.2"
+  }
+}
