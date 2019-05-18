@@ -43,29 +43,33 @@ function matchSubStr(item, subStr) {
       // 当前项 与 子串当前项 一致，则把当前项加到前面项中
       if (item === currSubStr) {
         startStr += currSubStr;
-  
+
         // 如果前面项的长度比后面项的长度大，则代表匹配失败，直接返回未找到
         if (startStr.length > (len - 1 - i)) { return false; }
-      }else {
-        // 开始项匹配结束
-        isStart = false;
-        // 把当前项条件到后面项中
-        endStr += currSubStr;
-      }
-    }
-    // 选取后面项操作
-    else {
-      // 如果当前项与当前子项一致，则代表匹配失败，直接返回未找到
-      if (item === currSubStr) { return false; }
 
-      // 如果当前项与前面项不一致，即把当前项加到后面项中
+        continue;
+      }
+
+      // 开始项匹配结束
+      isStart = false;
+      // 把当前项条件到后面项中
       endStr += currSubStr;
 
-      // 如果开始项等于后面项，则证明匹配成功，直接把结果返回
-      if (startStr.length === endStr.length) { return startStr + endStr; }
+      continue;
     }
+
+    // 选取后面项操作
+
+    // 如果当前项与当前子项一致，则代表匹配失败，直接返回未找到
+    if (item === currSubStr) { return false; }
+
+    // 如果当前项与前面项不一致，即把当前项加到后面项中
+    endStr += currSubStr;
+
+    // 如果开始项等于后面项，则证明匹配成功，直接把结果返回
+    if (startStr.length === endStr.length) { return startStr + endStr; }
   }
-  
+
   // 其实在循环内已经匹配完毕，这里无需再返回，当加一层保险吧
   return false;
 }
@@ -79,6 +83,6 @@ export default binaryStr => {
     let subStr = matchSubStr(binaryStr[i], binaryStr.slice(i+1));
     subStr && result.push(subStr);
   }
-  
+
   return result.length;
 }
