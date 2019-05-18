@@ -75,5 +75,5 @@ export default str => {
   }
 
   // 返回匹配的结果
-  return combination(code);
+  return combination([...code]);
 }
