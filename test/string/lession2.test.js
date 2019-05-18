@@ -1,5 +1,18 @@
 import binarySubStringRepeatCount from "../../code/string/lession2";
 
-test("10101 to 4", ()=>{
-  expect(binarySubStringRepeatCount("10101")).toBe(4);
+let tests = [
+  {
+    input: "00110011",
+    output: 6
+  },
+  {
+    input: "10101",
+    output: 4
+  },
+];
+
+tests.forEach(item => {
+  test(`binarySubStringRepeatCount: ${item.input} To ${item.output}`, () => {
+    expect(binarySubStringRepeatCount(item.input)).toBe(item.output);
+  });
 });
