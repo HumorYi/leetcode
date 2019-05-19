@@ -10,7 +10,16 @@
   注意：在字符串中，每个单词由单个空格分隔，并且字符串中不会有任何额外的空格。
 */
 
+/*
+  解题思路：
+    0、参数判断：只能输入内容为英文和单引号的字符串
+    1、按空格（字母）分割字符串，借助数组的reverse方法进行反转再拼接，最后按空格拼接回字符串
+*/
+
 export default str => {
+  // 参数判断
+  if (/[^A-z'\s]/.test(str)) { throw TypeError('please transfer a english sentence, thanks!'); }
+
   // 方式一：
   // return str.split(" ").map(item => item.split("").reverse().join("")).join(" ");
 

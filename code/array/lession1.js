@@ -12,6 +12,22 @@
     尽管上面的答案是按字典序排列的，但是你可以任意选择答案输出的顺序。
 */
 
+/*
+  解题思路：
+    0、参数判断：只能输入内容为2-9的字符串
+    1、定义一个对象存储每个数字对应的英文字母
+    2、如果只有字符串中一个数字，直接返回当前数字对应的英文字母
+    3、循环遍历字符串，获取对应数字的英文字母，存储到英文字母数组中
+    4、先把英文字母数组中前两个字符相组合，形成组合数组，再把组合数组替换英文字母数组中前两个字符，
+      当英文字母数组长度大于1时，反复递归上述步骤；
+      最终组合好的结果存储在英文字母数组中的第一个组合数组中，返回即可
+
+      4.1、获取两两字符组合数组：
+        1、外层循环遍历第一个字符；
+        2、内层循环遍历第二个字符；
+        3、把内外层每次遍历的字符存储到一个临时数组中，该临时数组就是两两字符组合的数组
+*/
+
 let alphabetObj = {
   2: 'abc',
   3: 'def',
@@ -30,15 +46,12 @@ export default str => {
   // 如果只输入一个按键，则把匹配结果拆分成单个字符返回
   if (str.length === 1) { return alphabetObj[str].split(''); }
 
-  // 拆分输入的数字，存储到数组中， 234 => [2, 3, 4]
-  let numbers = str.split('');
   // 保存键盘映射后的字母内容， 23 => ['abc', 'def']
-  let code = [];
+  let alphabets = [];
   // 遍历输入的数字，添加对应的字母
-  numbers.forEach(item => {
-    let alphabet = alphabetObj[item];
-    alphabet && code.push(alphabet);
-  });
+  for (let i=0, strLen=str.length; i<strLen; i++) {
+    alphabets.push(alphabetObj[str[i]]);
+  }
 
   /**
    * @desc 组合函数
@@ -75,5 +88,5 @@ export default str => {
   }
 
   // 返回匹配的结果
-  return combination([...code]);
+  return combination([...alphabets]);
 }
