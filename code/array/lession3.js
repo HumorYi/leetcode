@@ -28,7 +28,7 @@
     中间必须得三个以上才能种1朵花 => Math.floor((num(0)-1) / 2)
 */
 
-functin getFlowerbedCount(zeroLen) {
+function getFlowerbedCount(zeroLen) {
   return Math.floor(zeroLen / 2);
 }
 
@@ -66,6 +66,7 @@ export default (arr, n) => {
 
   // 记录可以种植的个数
   let flowerbedCount = 0;
+  let oneEndIndex = strFlowerbed.lastIndexOf(1);
 
   // 方式二（适合获取和替换内容）：数组找规律
   for(let i=0; i<flowerbedLen; i++) {
@@ -74,7 +75,7 @@ export default (arr, n) => {
     // 边界判断
     if (i === 0 && arr[1] === 0 || // 第一项
       arr[i-1] === 0 && arr[i+1] === 0 || // 中间项
-      i === flowerbedLen-1 && arr[i-2] === 1 && arr[i-1] === 0 // 最后一项
+      i === flowerbedLen-1 && (strFlowerbed.length-1 - oneEndIndex) % 2 === 0 // 最后一项
     ) {
       // 如果要范湖组装好的花坛数组，则解开注释
       // flowerbed[i] = 1;
@@ -84,16 +85,16 @@ export default (arr, n) => {
   }
 
   // 方式一（直接获取匹配的内容，适合获取，不适合替换内容）：字符串拆分
-  // let startIndex = strFlowerbed.indexOf(1);
-  // let endIndex = strFlowerbed.lastIndexOf(1);
+  // let oneStartIndex = strFlowerbed.indexOf(1);
+  // let oneEndIndex = strFlowerbed.lastIndexOf(1);
 
   // // 判断花坛头部是否可以种植
   // if (flowerbed[0] === 0) {
   //   // 获取花坛头部空地个数
-  //   flowerbedCount += getFlowerbedCount(startIndex);
+  //   flowerbedCount += getFlowerbedCount(oneStartIndex);
   // }
   // // 判断花坛中间是否可以种植
-  // let canFlowerbed = strFlowerbed.substring(startIndex + 1, endIndex).match(/0{3,}/g);
+  // let canFlowerbed = strFlowerbed.substring(oneStartIndex + 1, oneEndIndex).match(/0{3,}/g);
   // if (canFlowerbed) {
   //   canFlowerbed.forEach((item, i) => {
   //     flowerbedCount += getFlowerbedCount(item.length-1);
@@ -101,7 +102,7 @@ export default (arr, n) => {
   // }
   // // 判断花坛尾部是否可以种植
   // if (flowerbed[flowerbedLen - 1] === 0) {
-  //   flowerbedCount += getFlowerbedCount(flowerbedLen - endIndex - 1);
+  //   flowerbedCount += getFlowerbedCount(flowerbedLen - oneEndIndex - 1);
   // }
 
   return flowerbedCount >= n;

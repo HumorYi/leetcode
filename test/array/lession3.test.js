@@ -10,7 +10,7 @@ let tests = [
     output: false
   },
   {
-    input: { flowerbed: [0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,1,0,0], n: 5 },
+    input: { flowerbed: [0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0], n: 7 },
     output: true
   },
   {
