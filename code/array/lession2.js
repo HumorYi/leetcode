@@ -40,7 +40,9 @@
 */
 
 /*
-  解题思路：
+  notice: 如果只是单纯想获取是否可以分组，不需要获取分组内容，会更简单一些
+
+  解题思路1(数组)：
     0、参数判断：只能输入内容为数字的数组
     1、如果数组长度小于最小分组数，则分组失败，返回false
     2、如果数组长度等于最小分组数，分组结果为 第一个元素与第二个元素 是否相等
@@ -50,20 +52,109 @@
       如果当前数字出现的个数小于最小分组数，则分组失败，返回false；
       创建一个长度为当前数字出现的个数的临时数组，并将数组内部元素初始化为当前数字；
       把该数组存储到临时数组中；
-    6、创建一个扑克牌数组存储分组成功的元素
-    7、循环遍历临时数组，如果当前元素的长度 不是 最小分组数 的倍数，即分组失败，返回false；
-      否则当前元素分组成功，循环遍历倍数，
+    6、获取临时数组中所有数字个数的最小分组数 => 最大公约数，如果最小分组数小于原始的最小分组数，则分组失败，否则分组成功
+    7、创建一个扑克牌数组存储分组成功的元素
+    8、循环遍历临时数组，循环遍历倍数，
         创建一个长度为最小分组数的临时数组，并将数组内部元素初始化为当前数字；
         把该数组存储到扑克牌数组中；
-    8、如果临时数组遍历结束还没证明分组失败，则返回分组成功，所有分组的元素存储在扑克牌数组中
+    9、匹配成功
+
+  解题思路2(对象，推荐)：
+    0、参数判断：只能输入内容为数字的数组
+    1、如果数组长度小于最小分组数，则分组失败，返回false
+    2、如果数组长度等于最小分组数，分组结果为 第一个元素与第二个元素 是否相等
+    3、创建一个临时对象，存储每个数字的个数
+    4、循环遍历数组，更新临时对象中每个数字出现的个数
+    5、获取临时数组中所有数字个数的最小分组数 => 最大公约数，如果最小分组数小于原始的最小分组数，则分组失败，否则分组成功
+    7、创建一个扑克牌数组存储分组成功的元素
+    8、循环遍历临时数组，循环遍历倍数，
+        创建一个长度为最小分组数的临时数组，并将数组内部元素初始化为当前数字；
+        把该数组存储到扑克牌数组中；
+    9、匹配成功
 */
 
-export default arr => {
+function gcdForTwo(num1, num2) {
+  var temp; // 使用临时变量来存储交换数值
+  // 保证num2最小
+  if (num1 < num2) {
+    temp = num2;
+    num2 = num1;
+    num1 = temp;
+  }
+
+  // 当num2的值不为0时，循环查询
+  while (num2 !== 0) {
+    temp = num2;
+    num2 = num1 % num2;
+    num1 = temp;
+  }
+
+  return num1;
+}
+
+function gcdForArray(arr) {
+  let cloneArr = [...arr];
+
+  while(cloneArr.length > 1) {
+    let first = cloneArr.shift();
+    let second = cloneArr.shift();
+    let val = gcdForTwo(first, second);
+    if (val === 1) { return val; }
+    cloneArr.unshift(val);
+  }
+
+  return cloneArr[0];
+}
+
+// 方式二(优化版)：对象
+function isGroup(arr) {
+
   // 参数验证
   if (/[^\d]/.test(arr.join(""))) { throw TypeError("please transfer a number array, thanks!"); }
 
-  // 最终最小长度，用户寻找数组中最小项
-  let min = 2;
+  // 最小分组数 => 最大公约数
+  let gcd = 1;
+  // 元素最小长度
+  let originMin = 2;
+  let arrLen = arr.length;
+  let tmp = {};
+
+  // 优先判断能通过少数条件匹配的结果
+  if (arrLen < originMin) { return false; }
+  if (arrLen === originMin) { return arr[0] === arr[1]; }
+
+  // 循环遍历获取每个个数出现的个数，存储在临时对象中
+  arr.forEach(item => {
+    tmp[item] = tmp[item] ? tmp[item] + 1 : 1;
+  });
+
+  // 获取最小分组数
+  gcd = gcdForArray(Object.values(tmp));
+  // 如果最小分组数 < 定义的最小分组数，分组失败
+  if (gcd < originMin) { return false; }
+
+  // 如果无需获取分组数组，可把这块注释掉
+  let decks = [];
+  // 遍历临时对象
+  for (let num in tmp) {
+    // 根据最小倍数来重新组装最终的扑克牌
+    for (let j = tmp[num] / gcd; j > 0; j--) {
+      decks.push(new Array(gcd).fill(num));
+    }
+  }
+
+  return true;
+}
+
+// 方式一：数组
+export default arr => {
+  return isGroup(arr);
+
+  // 参数验证
+  if (/[^\d]/.test(arr.join(""))) { throw TypeError("please transfer a number array, thanks!"); }
+
+  // 最小分组数 => 最大公约数
+  let gcd = 2;
   // 元素最小长度
   let originMin = 2;
   let arrLen = arr.length;
@@ -73,7 +164,6 @@ export default arr => {
   // 优先判断能通过少数条件匹配的结果
   if (arrLen < originMin) { return false; }
   if (arrLen === originMin) { return arr[0] === arr[1]; }
-
 
   // 先进行升序排序，把相同数字都排列在一起;
   arr.sort((a, b) => a - b);
@@ -89,7 +179,7 @@ export default arr => {
     if (itemLen < originMin) { return false; }
 
     // 更新最小项个数
-    if (itemLen < min) { min = itemLen; }
+    if (itemLen < gcd) { gcd = itemLen; }
 
     // 把当前项添加到临时数组中
     tmp.push(new Array(itemLen).fill(item));
@@ -98,22 +188,28 @@ export default arr => {
     i += itemLen;
   }
 
-  // 遍历扑克牌数组
+  let groups = [];
   for (let i = 0, tmpLen = tmp.length; i < tmpLen; i++) {
-    // 获取当前项个数
-    let itemLen = tmp[i].length;
+    groups.push(tmp[i].length);
+  }
+  // 获取最小分组数
+  gcd = gcdForArray(Object.values(groups));
+  // 如果最小分组数 < 定义的最小分组数，分组失败
+  if (gcd < originMin) { return false; }
 
-    // 如果当前项个数不是最小项的倍数，则匹配失败
-    if (itemLen % min !== 0) { return false; }
+  // 获取最大公约数
+
+  // 遍历临时数组，判断结果并存在分组
+  for (let i = 0, tmpLen = tmp.length; i < tmpLen; i++) {
+    // 获取当前项;
+    let item = tmp[i];
 
     // 获取当前项数字
-    let itemNumber = tmp[i][0];
-    // 获取当前项是最小项的倍数
-    let times = itemLen / min;
+    let itemNumber = item[0];
 
     // 根据最小倍数来重新组装最终的扑克牌
-    for (let j=0; j<times; j++) {
-      decks.push(new Array(min).fill(itemNumber));
+    for (let j = item.length / gcd; j > 0; j--) {
+      decks.push(new Array(gcd).fill(itemNumber));
     }
   }
 

@@ -10,6 +10,14 @@ let tests = [
     output: false
   },
   {
+    input: [1,1,1,2,2,2,3,3,3],
+    output: true
+  },
+  {
+    input: [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,4,4],
+    output: true
+  },
+  {
     input: [1],
     output: false
   },
