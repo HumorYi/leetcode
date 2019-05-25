@@ -93,23 +93,23 @@ export default (str, words) => {
     throw new TypeError("words is empty array");
   }
 
-  // 计算字符串的总长度
-  let strLen = str.length
   // 如果字符串的长度小于所有单词的总长度直接返回
-  if (strLen < words.join('').length) { return []; }
+  if (str.length < words.join('').length) { return []; }
 
   // 只有一个单词匹配，直接返回
   if (wordsLen === 1) {
-    let index = str.indexOf(words[0]);
-    return index !== -1 ? [index] : [];
+    let wordLen = words[0].length;
+    let index = -wordLen;
+    let result = [];
+    while ((index = str.indexOf(word, index + wordLen)) !== -1) {
+      result.push(index);
+    }
+    return result;
   }
-
-  // 先遍历一遍单词列表，确保每个单词都会出现在字符串中
-  if (words.some(item => str.indexOf(item) === -1)) { return []; };
 
   // return search(str, words, wordsLen);
 
-  
+
 
   /*
     search 的算法是根据利用组合思想解决这个问题的，这个思想简单易于学习。缺点是当数据量大的时候组合数太多导致效率变低。
@@ -119,47 +119,47 @@ export default (str, words) => {
       for:[{start:2,end:5}]
       bar:[{start:5,end:8}]
       判断上一个单词的end和下一个单词的start是不是相同来计算两个单词是不是挨着
-*/
-  // 计算所有单词出现的起始位置和截止位置
-  let pos = {};
-  // 遍历所有单词查找在字符串中的起始位置和截止位置
-  for (let i = 0; i < wordsLen; i++) {
-    let word = words[i];
-    // 如果获取到该单词，则进行下一个
-    if (pos[word]) { continue; }
+  */
 
-    let wordLen = word.length;
-    // 获取字符串中每个单词出现的开始位置和结束位置
-    let tmp = [];
-    let arr;
-    let reg = new RegExp(word, 'g');
-    while ((arr = reg.exec(str)) !== null) {
-      tmp.push({ start: arr.index, end: arr.index + wordLen });
+  // 计算所有单词出现的起始位置和截止位置
+  let getPoses = (str, words, pos = {}) => {
+    // 遍历所有单词查找在字符串中的起始位置和截止位置
+    for (let i = 0, wordsLen = words.length; i < wordsLen; i++) {
+      let word = words[i];
+      // 如果获取到该单词，则进行下一个
+      if (pos[word]) { continue; }
+
+      let wordLen = word.length;
+      // 获取字符串中每个单词出现的开始位置和结束位置
+      let tmp = [];
+      let index = -wordLen;
+      while ((index = str.indexOf(word, index + wordLen)) !== -1) {
+        tmp.push({ start: index, end: index + wordLen });
+      }
+      // 只要有一个单词不在字符串中，匹配失败，就返回空数组
+      if (tmp.length === 0) { return false; }
+
+      // 保存当前单词的位置
+      pos[word] = [...tmp];
+
+      index = null;
+      tmp = null;
+      wordLen = null;
+      word = null;
     }
 
-    // 前面已经做过验证，确保所有单词都会出现在字符串中
-    // if (tmp.length === 0) { return false; }
-
-    // 保存当前单词的位置
-    pos[word] = [...tmp];
-
-    reg = null;
-    arr = null;
-    tmp = null;
-    wordLen = null;
+    return pos;
   }
 
-  // 只要有一个单词没找到说明不能匹配到连续的字符串
-  // if (words.some(item => !pos[item])) { return []; }
+  let poses = getPoses(str, words);
+  if (!poses) { return []; }
 
-  // 记录最终返回的单词位置结果
-  let result = [];
-
-  // 计算所有单词的位置
-  let match = poses => {
+  // 计算所有单词的位置，返回单词组合匹配成功的位置结果
+  let match = (words, poses, result = []) => {
     // 记录是不是所有单词都被匹配到了，每一次都应该把所有单词都包括进来并且是相邻的
-    let record = []
-    let posesLen = Object.keys(poses).length
+    let record = [];
+    let wordsLen = words.length;
+    let posesLen = Object.keys(poses).length;
     // 如果没有单词的位置说明处理结束了
     if (posesLen < 1) { return -1 }
 
@@ -171,7 +171,7 @@ export default (str, words) => {
       let minKey = '';
       // 优先找到所有单词其实位置最小的单词开始匹配
       for (let [key, value] of Object.entries(poses)) {
-        if (!value.length) { return false; }
+        if (value.length === 0) { return result; }
 
         let start = value[0].start;
         if (start < minValue) {
@@ -180,28 +180,30 @@ export default (str, words) => {
         }
       }
 
-      if (!minKey) { return false; }
+      if (!minKey) { return result; }
 
       // 起始位置最小的单词
-      let first = poses[minKey].shift()
-      if (!first) { return false }
+      let first = poses[minKey].shift();
+      if (!first) { return result; }
 
       // 记录下这个起始位置
-      let start = first.start
+      let start = first.start;
 
       // 记录words列表中的单词
-      let index = words.findIndex(item => item === minKey);
-      index !== -1 && !record.includes(index) && record.push(index);
+      record.push(words.findIndex(item => item === minKey));
 
-      // 每次循环要匹配到所有单词
+      // 外层遍历所有的单词
       for (let i = 1; i < wordsLen; i++) {
+        // 内层遍历 匹配与起始位置连续的单词位置
         for (let j = 0, next, pose; j < wordsLen; j++) {
           if (record.includes(j)) { continue; }
 
           pose = poses[words[j]];
-          if (pose.length === 0) { return false; }
+
+          if (pose.length === 0) { return result; }
 
           next = pose.find(item => item.start === first.end);
+
           if (next) {
             record.push(j);
             first = next;
@@ -210,12 +212,10 @@ export default (str, words) => {
         }
       }
 
-      // 如果所有单词的顺序是挨着的，记录下当前的起始位置
+      // 如果所有单词的顺序是连续（挨着）的，记录下当前的起始位置
       record.length === wordsLen && !result.includes(start) && result.push(start);
     }
   };
 
-  match(pos);
-
-  return result;
+  return match(words, poses).sort((a, b) => a - b);
 }

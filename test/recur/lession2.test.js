@@ -17,10 +17,10 @@ let tests = [
   },
   {
     input: {
-      str: "whatthefuckhahafuckthewhat",
+      str: "whatthefuckwhathahafuckthewhatfuck",
       words: ["what","the","fuck"]
     },
-    output: [0, 15]
+    output: [0, 4, 19, 23]
   },
 ];
 
