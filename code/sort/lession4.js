@@ -51,8 +51,8 @@ export default (arr) => {
   if (arrLen % 2 !== 0) {
     throw TypeError("please transfer a array length is even, thanks!");
   }
-
-  if (/[^\d](-\d)|1000|\d{4,}/.test(arr.join())) {
+  
+  if (arr.some(item => !Number.isInteger(item) || item < 0 || item > 1000)) {
     throw TypeError("please transfer a array item between 0 and 1000, thanks!");
   }
 
