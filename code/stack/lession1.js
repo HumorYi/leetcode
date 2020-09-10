@@ -49,49 +49,55 @@
 
 export default arr => {
   // 参数判断
-  if (!isArray(arr)) {
-    throw TypeError('please transfer a array, thanks!');
+  if (!Array.isArray(arr)) {
+    throw TypeError('please transfer a array, thanks!')
   }
 
-  let arrLen = arr.length;
+  let arrLen = arr.length
   if (arrLen < 1 || arrLen > 1000) {
-    throw TypeError("please transfer a array length between 1 and 1000, thanks!");
+    throw RangeError('please transfer a array length between 1 and 1000, thanks!')
   }
 
-  let specialCharacter = ["+", "D", "C"];
-  if (arr.some(item => !specialCharacter.includes(item) && (!Number.isInteger(Number(item)) || Number(item) < -30000 || Number(item) > 30000))) {
-    throw TypeError("please transfer a array item in ['C', 'D', '+'] or a integer between -30000 and 30000, thanks!");
+  let specialCharacter = ['+', 'D', 'C']
+  if (
+    arr.some(
+      item =>
+        !specialCharacter.includes(item) &&
+        (!Number.isInteger(Number(item)) || Number(item) < -30000 || Number(item) > 30000)
+    )
+  ) {
+    throw TypeError("please transfer a array item in ['C', 'D', '+'] or a integer between -30000 and 30000, thanks!")
   }
 
-  let result = [];
+  let result = []
 
   arr.forEach(item => {
-    let resultLen = result.length;
+    let resultLen = result.length
     switch (item) {
       case specialCharacter[0]:
         if (resultLen < 2) {
-          throw new Error("分数列表经过计算后不足2个，请输入正确的操作数据");
+          throw new Error('分数列表经过计算后不足2个，请输入正确的操作数据')
         }
 
-        result.push(result[resultLen - 1] + result[resultLen - 2]);
-        break;
+        result.push(result[resultLen - 1] + result[resultLen - 2])
+        break
       case specialCharacter[1]:
         if (resultLen < 1) {
-          throw new Error("分数列表经过计算后不足1个，请输入正确的操作数据");
+          throw new Error('分数列表经过计算后不足1个，请输入正确的操作数据')
         }
         result.push(result[resultLen - 1] * 2)
-        break;
+        break
       case specialCharacter[2]:
         if (resultLen < 1) {
-          throw new Error("分数列表经过计算后不足1个，请输入正确的操作数据");
+          throw new Error('分数列表经过计算后不足1个，请输入正确的操作数据')
         }
-        result.pop();
-        break;
+        result.pop()
+        break
       default:
-        result.push(Number(item));
-        break;
+        result.push(Number(item))
+        break
     }
-  });
+  })
 
-  return result.reduce((total, item) => total += item);
+  return result.reduce((total, item) => (total += item))
 }

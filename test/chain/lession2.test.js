@@ -21,15 +21,11 @@ let tests = [
       pos: -1
     },
     output: false
-  },
-];
+  }
+]
 
-tests.forEach(item => {
-
-  test(`isCircleChain : ${item.input} To ${item.output}`, () => {
-
-    expect(isCircleChain(item.input.head, item.input.pos)).toEqual(item.output);
-
-  });
-
-});
+tests.forEach((item, i) => {
+  test(`isCircleChain ${i} : ${item.input} To ${item.output}`, () => {
+    expect(isCircleChain(item.input.head, item.input.pos)).toBe(item.output)
+  })
+})

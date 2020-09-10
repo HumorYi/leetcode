@@ -54,60 +54,54 @@
       2、给钱找零，优先给金额大的零钱，尽量把小的零钱放在手里（多次找零，大人）
 */
 
-export default (bills) => {
-
+export default bills => {
   // 参数判断
   if (!Array.isArray(bills)) {
-    throw TypeError('please transfer a array, thanks!');
+    throw TypeError('please transfer a array, thanks!')
   }
-  if (0 < bills.length || bills.length > 10000) {
-    throw TypeError('please transfer a array length between 0 and 10000, thanks!');
+
+  const billsLen = bills.length
+
+  if (billsLen < 0 || billsLen > 10000) {
+    throw RangeError('please transfer a array length between 0 and 10000, thanks!')
   }
+
   bills.forEach((bill, index) => {
     if (!/^(5|10|20)$/.test(bill)) {
-      throw TypeError(`第 ${index} 位置数据：${bill} 不是 5/10/20`);
+      throw new Error(`第 ${index} 位置数据：${bill} 不是 5/10/20`)
     }
-  });
+  })
 
   let prices = [...bills],
-      cashbox = [],
-      lemonadePrice = 5
-  ;
-
+    cashbox = [],
+    lemonadePrice = 5
   while (prices.length > 0) {
-
-    let pay = prices.shift();
+    let pay = prices.shift()
 
     if (pay === lemonadePrice) {
-      cashbox.push(pay);
-    }
-    else {
+      cashbox.push(pay)
+    } else {
+      cashbox.sort((a, b) => b - a)
 
-      cashbox.sort((a, b) => b - a);
-
-      let change = pay - lemonadePrice;
+      let change = pay - lemonadePrice
 
       for (let i = 0, len = cashbox.length; i < len; i++) {
-
         if (cashbox[i] <= change) {
-          change -= cashbox.splice(i--, 1);
+          change -= cashbox.splice(i--, 1)
         }
 
         if (change === 0) {
-          break;
+          break
         }
-
       }
 
       if (change !== 0) {
-        return false;
+        return false
       }
 
-      cashbox.push(pay);
+      cashbox.push(pay)
     }
-
   }
 
-  return true;
-
+  return true
 }

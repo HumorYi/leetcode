@@ -37,7 +37,6 @@
 
 // 创建二叉树节点
 class Node {
-
   /**
    * @desc 构建二叉树节点
    *
@@ -46,17 +45,13 @@ class Node {
    * @returns {void}
    */
   constructor(val) {
-
-    this.val = val;
-    this.left = undefined;
-    this.right = undefined;
-
+    this.val = val
+    this.left = undefined
+    this.right = undefined
   }
-
 }
 
 class Tree {
-
   /**
    * @desc 构建二叉树
    *
@@ -65,20 +60,16 @@ class Tree {
    * @returns {Node} 根节点
    */
   constructor(data) {
-
     // 参数判断
     if (!Array.isArray(data)) {
-
-      throw TypeError('please transfer a array, thanks!');
-
+      throw TypeError('please transfer a array, thanks!')
     }
 
-    let root = new Node(data[0]);
+    let root = new Node(data.shift())
 
-    data.length > 1 && this._setNodeRelationship(root, data);
+    data.length > 1 && this._setNodeRelationship(root, data)
 
-    return root;
-
+    return root
   }
 
   /**
@@ -90,13 +81,7 @@ class Tree {
    * @returns {void}
    */
   _setNodeRelationship(root, data) {
-
-    for (let i = 1, dataLen = data.length; i < dataLen; i++) {
-
-      this._insert(root, data[i]);
-
-    }
-
+    data.forEach(item => this._insert(root, item))
   }
 
   /**
@@ -108,36 +93,19 @@ class Tree {
    * @returns {void}
    */
   _insert(node, val) {
-
     if (node.val > val) {
-
       if (node.left === undefined) {
-
-        node.left = new Node(val);
-
+        node.left = new Node(val)
+      } else {
+        this._insert(node.left, val)
       }
-      else {
-
-        this._insert(node.left, val);
-
-      }
-
-    }
-    else {
-
+    } else {
       if (node.right === undefined) {
-
-        node.right = new Node(val);
-
+        node.right = new Node(val)
+      } else {
+        this._insert(node.right, val)
       }
-      else {
-
-        this._insert(node.right, val);
-
-      }
-
     }
-
   }
 
   /**
@@ -150,26 +118,18 @@ class Tree {
    * @returns {Boolean}
    */
   static walk(root) {
-
     if (root.left === undefined && root.right === undefined) {
-
-      return true;
-
-    }
-    else if ((root.left && root.right === undefined) ||
+      return true
+    } else if (
+      (root.left && root.right === undefined) ||
       (root.left === undefined && root.right) ||
-      (root.val < root.left.val || root.val > root.right.val)
+      root.val < root.left.val ||
+      root.val > root.right.val
     ) {
-
-      return false;
-
+      return false
+    } else {
+      return Tree.walk(root.left) && Tree.walk(root.right)
     }
-    else {
-
-      return Tree.walk(root.left) && Tree.walk(root.right);
-
-    }
-
   }
 
   /**
@@ -181,22 +141,15 @@ class Tree {
    * @returns {Boolean}
    */
   static isBST(root) {
-
-    return root instanceof Node && Tree.walk(root);
-
+    return root instanceof Node && Tree.walk(root)
   }
-
 }
 
-export default (arr) => {
-
+export default arr => {
   // 参数判断
   if (!Array.isArray(arr)) {
-
-    throw TypeError('please transfer a array, thanks!');
-
+    throw TypeError('please transfer a array, thanks!')
   }
 
-  return Tree.isBST(new Tree(arr));
-
+  return Tree.isBST(new Tree(arr))
 }
